@@ -1,0 +1,56 @@
+@import url(https://fonts.googleapis.com/css?family=Pathway+Gothic+One);
+/* Defaults */
+html, body, #quizzie {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+.hidden {
+  display: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: #677c8a;
+  color: #fff;
+}
+
+h1 {
+  font-family: 'Pathway Gothic One  ', 'cursive';
+  font-size: 2.5em;
+}
+
+h2, p  {
+  font-family: 'Pathway Gothic One', 'sans-serif';
+  font-size: 2em;
+}
+
+h1, h2, p, div  {
+  text-align: center;
+  display: block;
+  width: auto;
+  margin: 1%;
+}
+
+#quizzie {
+  padding: 5% 0;
+  /* Individual Steps/Sections */
+  /* Content */
+}
+
+button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  background-color: #555555;
+}
+

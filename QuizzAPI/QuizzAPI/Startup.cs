@@ -31,6 +31,15 @@ namespace QuizzAPI
             services.AddDbContext<QuizDbContext>(
                 options => options.UseSqlServer(this.Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "local",
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("https://localhost:3000", "http://localhost:3000").WithMethods("GET");
+                                  });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,9 +57,11 @@ namespace QuizzAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("local");
 
             app.UseAuthorization();
 
