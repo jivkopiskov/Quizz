@@ -1,3 +1,4 @@
+let currentInterval =  []
 let result = { correctAnswers: 0, incorrectAnswers: 0 };
 let questionsAnswered = {
 };
@@ -54,22 +55,42 @@ function createQuiz(data, id) {
 
     main.appendChild(question);
   });
+  currentInterval.push(setTimeout(() => timeRanOut(document.querySelector('main > div')), 10000))
 }
 
 function onAnswerClick(e) {
-  if (e.target.isCorrect) {
-    result.correctAnswers++;
-  } else {
-    result.incorrectAnswers++;
+  if (confirm(`Are you sure you want to choose ${e.target.textContent}`)) {
+    currentInterval.forEach(x => clearTimeout(x))
+    if (e.target.isCorrect) {
+      result.correctAnswers++;
+    } else {
+      result.incorrectAnswers++;
+    }
+    let parent = e.target.parentElement;
+    parent.style.display = 'none';
+    let nextElement = parent.nextElementSibling;
+    if (!nextElement) {
+      displayMainScreen()
+    } else {
+      nextElement.style.display = 'block';
+      currentInterval.push(setTimeout(() => timeRanOut(nextElement), 10000))
+    }
+    alert(`The answer is ${e.target.isCorrect ? "correct" : "incorrect"}`)
   }
-  let parent =e.target.parentElement;
+
+}
+
+function timeRanOut(el) {
+  result.incorrectAnswers++;
+  let parent = el;
   parent.style.display = 'none';
   let nextElement = parent.nextElementSibling;
   if (!nextElement) {
     displayMainScreen()
   } else {
     nextElement.style.display = 'block';
+    currentInterval.push(setTimeout(() => timeRanOut(nextElement), 10000))
   }
+  alert(`Time ran out. Marked question as wrong.`)
 }
-
 displayMainScreen();
