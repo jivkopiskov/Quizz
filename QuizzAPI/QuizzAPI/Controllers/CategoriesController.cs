@@ -25,6 +25,12 @@
         {
             return context.Categories.ToList();
         }
+
+        [HttpPost]
+        public IEnumerable<Category> Post(string str)
+        {
+            return context.Categories.ToList();
+        }
     }
 
 }

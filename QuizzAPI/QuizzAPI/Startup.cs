@@ -37,7 +37,7 @@ namespace QuizzAPI
                 options.AddPolicy(name: "local",
                                   builder =>
                                   {
-                                      builder.WithOrigins("https://localhost:3000", "http://localhost:3000").WithMethods("GET");
+                                      builder.WithOrigins("https://localhost:3000", "http://localhost:3000", "http://192.168.0.189:3000");
                                   });
             });
         }
