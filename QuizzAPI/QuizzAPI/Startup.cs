@@ -69,9 +69,6 @@ namespace QuizzAPI
             {
                 endpoints.MapControllers();
             });
-
-
-
         }
     }
 }

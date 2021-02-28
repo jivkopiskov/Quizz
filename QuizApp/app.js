@@ -27,10 +27,16 @@ function displayMainScreen() {
 }
 
 function startNewGame() {
-  if (confirm('Do you want to cancel this quiz and start new game?')) {
+  if (document.getElementById('result')) {
     currentTimeouts.forEach(x => clearTimeout(x))
     currentIntervals.forEach(x => clearInterval(x))
     displayMainScreen();
+  } else {
+    if (confirm('Do you want to cancel this quiz and start new game?')) {
+      currentTimeouts.forEach(x => clearTimeout(x))
+      currentIntervals.forEach(x => clearInterval(x))
+      displayMainScreen();
+    }
   }
 }
 
@@ -115,7 +121,7 @@ function timeRanOut(el) {
   currentQuizResult.incorrectAnswers++;
   resultPerCategory[currentCategory].incorrectAnswers++;
   nextQuestion(el)
-  alertify.confirm().destroy(); 
+  alertify.confirm().destroy();
   alertify.error("Time ran out. Marked as incorrect.")
 }
 
@@ -123,13 +129,121 @@ function nextQuestion(currentQuestion) {
   let nextElement = currentQuestion.nextElementSibling;
   currentQuestion.remove();
   if (!nextElement) {
-    displayMainScreen()
+    showResult()
   } else {
     nextElement.style.display = 'block';
     currentTimeouts.push(setTimeout(() => timeRanOut(nextElement), 30000))
     let timer = document.querySelector('b')
     currentIntervals.push(setInterval(() => timer.textContent = Number(timer.textContent) - 1, 1000));
   }
+}
+
+function showResult() {
+  let h2 = document.createElement('h2');
+  h2.textContent = "Result from last quiz:";
+  main.appendChild(h2);
+  let container = document.createElement('div');
+  container.className = 'chart-container';
+  let chartEl = document.createElement('canvas');
+  chartEl.id = "result";
+  container.appendChild(chartEl);
+  main.appendChild(container);
+  createChartForLastQuiz(chartEl);
+
+  h2 = document.createElement('h2');
+  h2.textContent = "Overall score per category:";
+  main.appendChild(h2);
+  container = document.createElement('div');
+  container.className = 'chart-container';
+  chartEl = document.createElement('canvas');
+  chartEl.id = "result";
+  container.appendChild(chartEl);
+  main.appendChild(container);
+  createChartPerCategory(chartEl);
+}
+
+function createChartForLastQuiz(chartEl) {
+  let ctx = chartEl.getContext('2d')
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Answers'],
+      datasets: [{
+        label: 'Correct Answers',
+        data: [currentQuizResult.correctAnswers],
+        backgroundColor: [
+          'rgb(32, 186, 32)',
+        ],
+        borderColor: [
+          'rgb(32, 186, 32)',
+        ],
+        borderWidth: 1
+      },
+      {
+        label: 'Incorrect Answers',
+        data: [currentQuizResult.incorrectAnswers],
+        backgroundColor: [
+          'rgb(255, 99, 132)',
+        ],
+        borderColor: [
+          'rgb(255, 99, 132)',
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            precision: 0
+          }
+        }]
+      }
+    },
+  });
+}
+
+async function createChartPerCategory(chartEl) {
+  let resp = await fetch('https://localhost:5001/api/categories');
+  let data = await resp.json();
+  console.log(data);
+  let ctx = chartEl.getContext('2d')
+  var labels = Object.keys(resultPerCategory).map(x => data.find(c => c.id == x).name);
+  var correctAnswers = Object.values(resultPerCategory).map(x => x.correctAnswers);
+  var incorrectAnswers = Object.values(resultPerCategory).map(x => x.incorrectAnswers);
+  let backgroundColorCorrectAnswers = new Array(labels.length);
+  backgroundColorCorrectAnswers.fill('rgb(32, 186, 32)');
+  let backgroundColorIncorrectAnswers = new Array(labels.length);
+  backgroundColorIncorrectAnswers.fill('rgb(255, 99, 132)');
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Correct Answers',
+        data: correctAnswers,
+        backgroundColor: backgroundColorCorrectAnswers,
+        borderWidth: 1
+      },
+      {
+        label: 'Incorrect Answers',
+        data: incorrectAnswers,
+        backgroundColor: backgroundColorIncorrectAnswers,
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            precision: 0
+          }
+        }]
+      }
+    },
+  });
 }
 
 displayMainScreen();
