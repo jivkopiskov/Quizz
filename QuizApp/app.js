@@ -164,7 +164,7 @@ function showResult() {
 
 function createChartForLastQuiz(chartEl) {
   let ctx = chartEl.getContext('2d')
-  var myChart = new Chart(ctx, {
+  let myChart = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: ['Answers'],
@@ -209,14 +209,14 @@ async function createChartPerCategory(chartEl) {
   let data = await resp.json();
   console.log(data);
   let ctx = chartEl.getContext('2d')
-  var labels = Object.keys(resultPerCategory).map(x => data.find(c => c.id == x).name);
-  var correctAnswers = Object.values(resultPerCategory).map(x => x.correctAnswers);
-  var incorrectAnswers = Object.values(resultPerCategory).map(x => x.incorrectAnswers);
+  let labels = Object.keys(resultPerCategory).map(x => data.find(c => c.id == x).name);
+  let correctAnswers = Object.values(resultPerCategory).map(x => x.correctAnswers);
+  let incorrectAnswers = Object.values(resultPerCategory).map(x => x.incorrectAnswers);
   let backgroundColorCorrectAnswers = new Array(labels.length);
   backgroundColorCorrectAnswers.fill('rgb(32, 186, 32)');
   let backgroundColorIncorrectAnswers = new Array(labels.length);
   backgroundColorIncorrectAnswers.fill('rgb(255, 99, 132)');
-  var myChart = new Chart(ctx, {
+  let myChart = new Chart(ctx, {
     type: 'bar',
     data: {
       labels: labels,
